@@ -1,5 +1,5 @@
-export default interface ICreateUserDTO{
-    useName: string;
-    useEmail: string;
-    usePasswordHash: string;
+export default interface ICreateUserDTO {
+  useName: string;
+  useEmail: string;
+  usePasswordHash: string;
 }

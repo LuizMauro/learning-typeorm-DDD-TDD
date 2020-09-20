@@ -9,5 +9,4 @@ routes.use('/appointments', appointmentsRouter);
 routes.use('/users', usersRouter);
 routes.use('/session', sessionsRouter);
 
-
 export default routes;

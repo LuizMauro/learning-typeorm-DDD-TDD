@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  ManyToMany,
+} from 'typeorm';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 

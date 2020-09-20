@@ -1,11 +1,11 @@
 import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken'
+import { sign } from 'jsonwebtoken';
 import { injectable, inject } from 'tsyringe';
 
 import authConfig from '@config/auth';
 
 import AppError from '@shared/errors/AppErros';
-import IUsersRepository from "@modules/users/repositories/IUsersRepository";
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
 import User from '../infra/typeorm/entities/User';
 
@@ -20,40 +20,36 @@ interface IResponse {
 }
 
 @injectable()
-class AuthenticateUserService{
+class AuthenticateUserService {
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
-){}
+    private usersRepository: IUsersRepository,
+  ) {}
 
-  public async execute({ email, password }: IRequest): Promise<IResponse>{
-
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
 
-
-    if(!user){
+    if (!user) {
       throw new AppError('Email não existe', 401);
     }
 
     const passwordMathced = await compare(password, user.usePasswordHash);
 
-    if(!passwordMathced){
+    if (!passwordMathced) {
       throw new AppError('Email ou senha incorretos', 401);
     }
 
-    //Usuario tudo ok
+    // Usuario tudo ok
 
     const { secret, expiresIn } = authConfig.jwt;
 
     const token = sign({}, secret, {
       subject: user.useID,
-      expiresIn: expiresIn,
+      expiresIn,
     });
 
-    return {user, token}
-
+    return { user, token };
   }
 }
-
 
 export default AuthenticateUserService;

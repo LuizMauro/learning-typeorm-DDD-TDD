@@ -4,10 +4,10 @@ import authenticated from '@modules/users/infra/http/middlewares/Authenticated';
 import AppointmentController from '../controllers/AppointmentController';
 
 const appointmentRouter = Router();
-const appointmentController =  new AppointmentController();
+const appointmentController = new AppointmentController();
 
 appointmentRouter.use(authenticated);
 
-appointmentRouter.post('/', appointmentController.create );
+appointmentRouter.post('/', appointmentController.create);
 
 export default appointmentRouter;

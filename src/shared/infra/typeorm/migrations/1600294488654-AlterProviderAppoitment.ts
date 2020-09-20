@@ -1,38 +1,49 @@
-import {MigrationInterface, QueryRunner, TableColumn, TableForeignKey} from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  TableColumn,
+  TableForeignKey,
+} from 'typeorm';
 
-export class AlterProviderAppoitment1600294488654 implements MigrationInterface {
+// eslint-disable-next-line import/prefer-default-export
+export class AlterProviderAppoitment1600294488654
+  implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropColumn('appointments', 'provider');
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.dropColumn('appointments', 'provider');
-
-      await queryRunner.addColumn('appointments', new TableColumn({
-        name: "provider_id",
+    await queryRunner.addColumn(
+      'appointments',
+      new TableColumn({
+        name: 'provider_id',
         type: 'varchar',
         isNullable: true,
-      }));
+      }),
+    );
 
-      await queryRunner.createForeignKey('appointments', new TableForeignKey({
-        name: "AppointmentProvider",
+    await queryRunner.createForeignKey(
+      'appointments',
+      new TableForeignKey({
+        name: 'AppointmentProvider',
         columnNames: ['provider_id'],
         referencedColumnNames: ['useID'],
         referencedTableName: 'use_users',
         onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
-      }));
+        onUpdate: 'CASCADE',
+      }),
+    );
+  }
 
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('appointments', 'AppointmentProvider');
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropColumn('appointments', 'provider_id');
 
-      await queryRunner.dropForeignKey('appointments', 'AppointmentProvider');
-
-      await queryRunner.dropColumn('appointments', 'provider_id');
-
-      await queryRunner.addColumn('appointments', new TableColumn({
-        name: "provider",
-        type: "varchar"
-      }));
-
-    }
-
+    await queryRunner.addColumn(
+      'appointments',
+      new TableColumn({
+        name: 'provider',
+        type: 'varchar',
+      }),
+    );
+  }
 }

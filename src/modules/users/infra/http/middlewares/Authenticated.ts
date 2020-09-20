@@ -5,7 +5,7 @@ import AppErros from '@shared/errors/AppErros';
 
 import authConfig from '@config/auth';
 
-interface ITokenPayload{
+interface ITokenPayload {
   iat: number;
   exp: number;
   sub: string;
@@ -13,31 +13,27 @@ interface ITokenPayload{
 
 export default function Authenticated(
   request: Request,
-   response: Response,
-  next: NextFunction ): void{
+  response: Response,
+  next: NextFunction,
+): void {
+  const authHeader = request.headers.authorization;
 
-    const authHeader = request.headers.authorization;
+  if (!authHeader) {
+    throw new AppErros('Token miss', 401);
+  }
 
-    if(!authHeader){
-      throw new AppErros('Token miss', 401);
-    }
+  const [, token] = authHeader.split(' ');
 
-    const [, token] =  authHeader.split(' ');
+  const { secret } = authConfig.jwt;
+  try {
+    const decoded = verify(token, secret);
 
-    const { secret } = authConfig.jwt;
-    try{
+    const { sub } = decoded as ITokenPayload;
 
-      const decoded = verify( token, secret );
+    request.user = { useID: sub };
 
-      const { sub } = decoded as ITokenPayload;
-
-      request.user = { useID: sub };
-
-      return next();
-
-    } catch(err){
-      throw  new AppErros('Token invalid', 401);
-    }
-
-
+    return next();
+  } catch (err) {
+    throw new AppErros('Token invalid', 401);
+  }
 }
